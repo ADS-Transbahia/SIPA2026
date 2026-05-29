@@ -7,116 +7,87 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --brand: #1a3a5c;
-    --brand-light: #2563a8;
-    --accent: #e8b84b;
-    --accent-dark: #c49530;
-    --danger: #c0392b;
-    --success: #1a7a4a;
-    --bg: #f0f2f5;
-    --card: #ffffff;
-    --text: #1a1a2e;
-    --muted: #6b7280;
-    --border: #dde1e7;
-    --font-display: 'Bebas Neue', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
+    --brand: #1a3a5c; --brand-light: #2563a8; --accent: #e8b84b; --accent-dark: #c49530;
+    --danger: #c0392b; --success: #1a7a4a; --warning: #b45309;
+    --bg: #f0f2f5; --card: #ffffff; --text: #1a1a2e; --muted: #6b7280; --border: #dde1e7;
+    --font-display: 'Bebas Neue', sans-serif; --font-body: 'DM Sans', sans-serif;
   }
-
   body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  header {
-    background: var(--brand); color: #fff; padding: 0;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  }
-  .header-inner {
-    max-width: 960px; margin: 0 auto; padding: 12px 20px;
-    display: flex; align-items: center; gap: 16px;
-  }
-  .logo-block { display: flex; flex-direction: column; }
-  .logo-title { font-family: var(--font-display); font-size: 28px; letter-spacing: 2px; color: var(--accent); line-height: 1; }
-  .logo-sub { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; }
-  .header-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.2); }
-  .nav-tabs { display: flex; gap: 4px; margin-left: auto; }
-  .nav-tab {
-    background: none; border: none; color: rgba(255,255,255,0.65);
-    font-family: var(--font-body); font-size: 13px; font-weight: 500;
-    padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all .2s; letter-spacing: .5px;
-  }
-  .nav-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
-  .nav-tab.active { background: var(--accent); color: var(--brand); font-weight: 600; }
+  /* SETUP OVERLAY */
+  #setup-overlay { display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,20,40,0.93); align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+  #setup-overlay.show { display:flex; }
+  .setup-box { background:#fff; border-radius:16px; padding:40px 36px; max-width:480px; width:92%; box-shadow:0 24px 60px rgba(0,0,0,0.4); }
+  .setup-logo { font-family:var(--font-display); font-size:32px; letter-spacing:3px; color:var(--accent); background:var(--brand); display:inline-block; padding:4px 16px; border-radius:6px; margin-bottom:20px; }
+  .setup-title { font-family:var(--font-display); font-size:22px; letter-spacing:1px; color:var(--brand); margin-bottom:6px; }
+  .setup-sub { font-size:13px; color:var(--muted); margin-bottom:24px; line-height:1.6; }
+  .setup-steps { background:#f0f7ff; border:1px solid #bcd4f7; border-radius:8px; padding:12px 16px; margin-bottom:24px; font-size:12px; color:var(--brand); line-height:2.2; }
+  .setup-badge { display:inline-block; background:var(--brand); color:var(--accent); font-family:var(--font-display); font-size:11px; letter-spacing:1px; padding:1px 8px; border-radius:3px; }
 
-  main { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
-  .page { display: none; }
-  .page.active { display: block; }
+  header { background:var(--brand); color:#fff; padding:0; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.2); }
+  .header-inner { max-width:960px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; gap:16px; }
+  .logo-block { display:flex; flex-direction:column; }
+  .logo-title { font-family:var(--font-display); font-size:28px; letter-spacing:2px; color:var(--accent); line-height:1; }
+  .logo-sub { font-size:11px; font-weight:500; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px; }
+  .header-divider { width:1px; height:40px; background:rgba(255,255,255,0.2); }
+  .nav-tabs { display:flex; gap:4px; margin-left:auto; }
+  .nav-tab { background:none; border:none; color:rgba(255,255,255,0.65); font-family:var(--font-body); font-size:13px; font-weight:500; padding:8px 16px; border-radius:6px; cursor:pointer; transition:all .2s; letter-spacing:.5px; }
+  .nav-tab:hover { background:rgba(255,255,255,0.1); color:#fff; }
+  .nav-tab.active { background:var(--accent); color:var(--brand); font-weight:600; }
 
-  .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 28px; margin-bottom: 20px; }
-  .card-title { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--brand); margin-bottom: 6px; }
-  .card-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+  main { max-width:960px; margin:0 auto; padding:32px 20px; }
+  .page { display:none; } .page.active { display:block; }
+  .card { background:var(--card); border-radius:12px; border:1px solid var(--border); padding:28px; margin-bottom:20px; }
+  .card-title { font-family:var(--font-display); font-size:22px; letter-spacing:1px; color:var(--brand); margin-bottom:6px; }
+  .card-sub { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.5; }
 
-  /* CPF STEP */
-  .cpf-step { max-width: 420px; margin: 0 auto; padding: 16px 0; }
-  .cpf-step .card-title { font-size: 26px; text-align: center; margin-bottom: 4px; }
-  .cpf-step .card-sub { text-align: center; margin-bottom: 24px; }
-  .cpf-icon { font-size: 48px; text-align: center; margin-bottom: 12px; }
-  .cpf-hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .cpf-step { max-width:420px; margin:0 auto; padding:16px 0; }
+  .cpf-step .card-title { font-size:26px; text-align:center; margin-bottom:4px; }
+  .cpf-step .card-sub { text-align:center; margin-bottom:24px; }
+  .cpf-icon { font-size:48px; text-align:center; margin-bottom:12px; }
+  .cpf-hint { font-size:12px; color:var(--muted); margin-top:6px; }
 
-  /* STATUS */
-  .status-banner { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
-  .status-banner.open { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-  .status-banner.closed { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .status-banner.open .status-dot { background: #28a745; animation: pulse 2s infinite; }
-  .status-banner.closed .status-dot { background: #dc3545; }
+  /* AVISO INTEGRIDADE */
+  .integrity-notice { display:flex; align-items:flex-start; gap:10px; background:#fff8e1; border:1px solid #fcd34d; border-radius:8px; padding:12px 14px; margin-top:16px; font-size:12px; color:#7a5800; line-height:1.6; }
+  .integrity-notice .int-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+
+  .status-banner { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:8px; font-size:14px; font-weight:500; margin-bottom:20px; }
+  .status-banner.open { background:#d4edda; color:#155724; border:1px solid #c3e6cb; }
+  .status-banner.closed { background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; }
+  .status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .status-banner.open .status-dot { background:#28a745; animation:pulse 2s infinite; }
+  .status-banner.closed .status-dot { background:#dc3545; }
   @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
 
-  /* CANDIDATES */
-  .candidates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-  .candidate-card {
-    border: 2px solid var(--border); border-radius: 10px; padding: 20px;
-    cursor: pointer; transition: all .2s; text-align: center; background: #fff; position: relative;
-  }
-  .candidate-card:hover { border-color: var(--brand-light); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(37,99,168,0.1); }
-  .candidate-card.selected { border-color: var(--brand); background: #eef4ff; }
+  .candidates-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:16px; }
+  .candidate-card { border:2px solid var(--border); border-radius:10px; padding:20px; cursor:pointer; transition:all .2s; text-align:center; background:#fff; position:relative; }
+  .candidate-card:hover { border-color:var(--brand-light); transform:translateY(-2px); box-shadow:0 4px 16px rgba(37,99,168,0.1); }
+  .candidate-card.selected { border-color:var(--brand); background:#eef4ff; }
   .candidate-card.selected::after { content:'✓'; position:absolute; top:8px; right:10px; font-size:16px; color:var(--brand); font-weight:700; }
-  .candidate-avatar {
-    width: 80px; height: 80px; border-radius: 50%;
-    background: var(--brand); color: var(--accent);
-    font-family: var(--font-display); font-size: 26px;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 12px; overflow: hidden; border: 3px solid var(--border); flex-shrink: 0;
-  }
+  .candidate-avatar { width:80px; height:80px; border-radius:50%; background:var(--brand); color:var(--accent); font-family:var(--font-display); font-size:26px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; overflow:hidden; border:3px solid var(--border); flex-shrink:0; }
   .candidate-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-  .candidate-name { font-size: 15px; font-weight: 600; color: var(--text); }
-  .candidate-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .candidate-name { font-size:15px; font-weight:600; color:var(--text); }
+  .candidate-role { font-size:12px; color:var(--muted); margin-top:2px; }
   .candidate-num { display:inline-block; margin-top:8px; background:var(--brand); color:var(--accent); font-family:var(--font-display); font-size:18px; letter-spacing:2px; padding:2px 12px; border-radius:4px; }
 
-  /* BUTTONS */
   .btn { display:inline-flex; align-items:center; gap:8px; padding:12px 24px; border-radius:8px; border:none; font-family:var(--font-body); font-size:14px; font-weight:600; cursor:pointer; transition:all .2s; text-transform:uppercase; letter-spacing:.8px; }
-  .btn-primary { background:var(--brand); color:#fff; }
-  .btn-primary:hover { background:var(--brand-light); }
+  .btn-primary { background:var(--brand); color:#fff; } .btn-primary:hover { background:var(--brand-light); }
   .btn-primary:disabled { background:var(--border); color:var(--muted); cursor:not-allowed; }
-  .btn-accent { background:var(--accent); color:var(--brand); }
-  .btn-accent:hover { background:var(--accent-dark); }
-  .btn-danger { background:var(--danger); color:#fff; }
-  .btn-danger:hover { background:#a93226; }
-  .btn-success { background:var(--success); color:#fff; }
-  .btn-success:hover { background:#155d38; }
-  .btn-outline { background:transparent; color:var(--brand); border:1.5px solid var(--brand); }
-  .btn-outline:hover { background:var(--brand); color:#fff; }
+  .btn-accent { background:var(--accent); color:var(--brand); } .btn-accent:hover { background:var(--accent-dark); }
+  .btn-danger { background:var(--danger); color:#fff; } .btn-danger:hover { background:#a93226; }
+  .btn-success { background:var(--success); color:#fff; } .btn-success:hover { background:#155d38; }
+  .btn-outline { background:transparent; color:var(--brand); border:1.5px solid var(--brand); } .btn-outline:hover { background:var(--brand); color:#fff; }
+  .btn-warning { background:#fef3c7; color:var(--warning); border:1.5px solid #fcd34d; } .btn-warning:hover { background:#fcd34d; }
   .btn-sm { padding:8px 16px; font-size:12px; }
 
-  /* FORM */
-  .form-group { margin-bottom: 16px; }
+  .form-group { margin-bottom:16px; }
   .form-label { display:block; font-size:13px; font-weight:600; color:var(--brand); margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
   .form-input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:8px; font-family:var(--font-body); font-size:14px; color:var(--text); transition:border-color .2s; background:#fff; }
   .form-input:focus { outline:none; border-color:var(--brand-light); }
-  .form-input.error { border-color: var(--danger); }
+  .form-input.error { border-color:var(--danger); }
 
-  /* RESULTS */
-  .result-item { margin-bottom: 16px; }
+  .result-item { margin-bottom:16px; }
   .result-header { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
   .result-name-wrap { flex:1; display:flex; justify-content:space-between; align-items:baseline; }
   .result-name { font-size:15px; font-weight:600; }
@@ -128,18 +99,29 @@
   .result-avatar { width:40px; height:40px; border-radius:50%; background:var(--brand); color:var(--accent); font-family:var(--font-display); font-size:16px; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; border:2px solid var(--border); }
   .result-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 
-  /* ADMIN */
   .table { width:100%; border-collapse:collapse; font-size:14px; }
   .table th { text-align:left; padding:10px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); border-bottom:2px solid var(--border); font-weight:600; }
-  .table td { padding:12px; border-bottom:1px solid var(--border); vertical-align: middle; }
+  .table td { padding:12px; border-bottom:1px solid var(--border); vertical-align:middle; }
   .table tr:last-child td { border-bottom:none; }
 
-  /* LOG IMUTÁVEL */
+  /* SUSPEITOS */
+  .suspicious-banner { background:#fff0f0; border:1.5px solid #f5c6cb; border-radius:10px; padding:16px 20px; margin-bottom:20px; }
+  .suspicious-banner .s-title { font-family:var(--font-display); font-size:18px; color:var(--danger); letter-spacing:1px; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .suspicious-item { background:#fff; border:1px solid #f5c6cb; border-radius:8px; padding:10px 14px; margin-bottom:8px; font-size:13px; }
+  .suspicious-item:last-child { margin-bottom:0; }
+  .suspicious-fp { font-family:monospace; font-size:11px; color:var(--muted); margin-top:4px; }
+  .suspicious-cpfs { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; }
+  .suspicious-cpf-tag { background:#fde8e8; color:var(--danger); border:1px solid #f5c6cb; border-radius:4px; padding:2px 8px; font-size:11px; font-weight:600; }
+
+  /* CONFIG row */
+  .config-row { display:flex; align-items:center; gap:12px; background:#f0f7ff; border:1px solid #bcd4f7; border-radius:8px; padding:10px 16px; margin-bottom:16px; font-size:13px; flex-wrap:wrap; }
+  .config-label { color:var(--brand); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.5px; flex-shrink:0; }
+  .config-val { color:var(--muted); font-family:monospace; font-size:12px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+
   .log-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; background:#e8f5e9; color:#1a7a4a; border:1px solid #a5d6a7; }
   .log-hash { font-family:monospace; font-size:11px; color:var(--muted); }
   .immutable-notice { display:flex; align-items:center; gap:8px; background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:10px 14px; font-size:12px; color:#7a5800; margin-bottom:16px; }
 
-  /* VOTED */
   .voted-screen { text-align:center; padding:48px 24px; }
   .voted-icon { width:80px; height:80px; border-radius:50%; background:#d4edda; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:36px; }
   .voted-title { font-family:var(--font-display); font-size:32px; color:var(--success); letter-spacing:2px; margin-bottom:8px; }
@@ -147,13 +129,11 @@
   .vote-receipt { background:#f0f7ff; border:1px solid #bcd4f7; border-radius:8px; padding:16px; margin:20px auto; max-width:340px; font-size:13px; text-align:left; }
   .vote-receipt strong { color:var(--brand); }
 
-  /* STATS */
   .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
   .stat-card { background:var(--brand); color:#fff; border-radius:10px; padding:16px; text-align:center; }
   .stat-num { font-family:var(--font-display); font-size:32px; color:var(--accent); letter-spacing:1px; }
   .stat-label { font-size:11px; text-transform:uppercase; letter-spacing:.8px; opacity:.7; margin-top:2px; }
 
-  /* PHOTO UPLOAD */
   .photo-upload-wrap { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
   .photo-preview { width:72px; height:72px; border-radius:50%; background:var(--brand); color:var(--accent); font-family:var(--font-display); font-size:22px; display:flex; align-items:center; justify-content:center; overflow:hidden; border:2px solid var(--border); flex-shrink:0; }
   .photo-preview img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
@@ -163,7 +143,6 @@
   .admin-avatar { width:36px; height:36px; border-radius:50%; background:var(--brand); color:var(--accent); font-family:var(--font-display); font-size:14px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; border:1.5px solid var(--border); }
   .admin-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 
-  /* TOAST */
   #toast { position:fixed; bottom:24px; right:24px; background:var(--text); color:#fff; padding:12px 20px; border-radius:8px; font-size:13px; font-weight:500; z-index:999; transform:translateY(100px); opacity:0; transition:all .3s; max-width:320px; }
   #toast.show { transform:translateY(0); opacity:1; }
   #toast.success-toast { background:var(--success); }
@@ -172,7 +151,6 @@
   .empty-state { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
   .admin-login { max-width:360px; margin:0 auto; }
 
-  /* MODAL */
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; align-items:center; justify-content:center; }
   .modal-overlay.show { display:flex; }
   .modal { background:#fff; border-radius:12px; padding:32px; max-width:400px; width:90%; text-align:center; }
@@ -192,6 +170,33 @@
 </head>
 <body>
 
+<!-- ══ SETUP OVERLAY ══ -->
+<div id="setup-overlay">
+  <div class="setup-box">
+    <div class="setup-logo">SIPA 2026</div>
+    <div class="setup-title">Configurar Supabase</div>
+    <div class="setup-sub">Informe as credenciais do projeto. Ficam salvas neste navegador — sem editar código.</div>
+    <div class="setup-steps">
+      <strong>1.</strong> Supabase → seu projeto → <strong>Settings → API</strong><br>
+      <strong>2.</strong> Copie a <strong>Project URL</strong> e a <strong>anon/public key</strong><br>
+      <strong>3.</strong> Cole abaixo e clique em Salvar
+    </div>
+    <div class="form-group">
+      <label class="form-label">Project URL</label>
+      <input type="text" class="form-input" id="setup-url" placeholder="https://xxxxxxxxxxxx.supabase.co" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Anon / Public Key</label>
+      <input type="text" class="form-input" id="setup-key" placeholder="eyJhbGciOiJIUzI1NiIs..." autocomplete="off">
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="saveSetup()">Salvar e Conectar →</button>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6">
+      🔒 Credenciais salvas apenas no localStorage deste navegador.<br>
+      Para redefinir: painel Admin → Reconfigurar Supabase.
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="header-inner">
     <div class="logo-block">
@@ -209,14 +214,13 @@
 
 <main>
 
-  <!-- PÁGINA: VOTAR -->
+  <!-- VOTAR -->
   <div id="page-vote" class="page active">
     <div id="vote-status-banner" class="status-banner open">
       <div class="status-dot"></div>
       <span id="status-text">Votação aberta</span>
     </div>
 
-    <!-- TELA: já votou -->
     <div id="voted-screen" class="card" style="display:none">
       <div class="voted-screen">
         <div class="voted-icon">✅</div>
@@ -227,7 +231,6 @@
       </div>
     </div>
 
-    <!-- STEP 1: CPF -->
     <div id="cpf-step" class="card" style="display:none">
       <div class="cpf-step">
         <div class="cpf-icon">🪪</div>
@@ -240,28 +243,29 @@
           <div class="cpf-hint" id="cpf-hint"></div>
         </div>
         <button class="btn btn-primary" style="width:100%" onclick="confirmarCPF()">Continuar →</button>
+        <div class="integrity-notice">
+          <span class="int-icon">⚠️</span>
+          <span><strong>Uso indevido é fraude eleitoral.</strong> O CPF informado é vinculado ao seu dispositivo e registrado de forma rastreável. O uso de CPF de terceiros para votar é irregular e pode ser identificado pelo administrador da eleição.</span>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 2: votar -->
     <div id="vote-form" style="display:none">
       <div class="card">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
           <div class="card-title" style="margin:0">Escolha seu Candidato</div>
           <span id="cpf-badge" style="font-size:12px;background:#eef4ff;color:var(--brand);padding:4px 10px;border-radius:20px;font-weight:600;border:1px solid #bcd4f7"></span>
         </div>
-        <div class="card-sub">Selecione um candidato e confirme. Sua identidade e voto ficam registrados de forma segura.</div>
-        <div id="candidates-grid" class="candidates-grid">
-          <div class="empty-state">Nenhum candidato cadastrado ainda.</div>
-        </div>
+        <div class="card-sub">Selecione um candidato e confirme. Seu voto fica registrado de forma segura.</div>
+        <div id="candidates-grid" class="candidates-grid"><div class="empty-state">Nenhum candidato cadastrado ainda.</div></div>
       </div>
-      <div style="display:flex; justify-content:flex-end; margin-top: 4px;">
+      <div style="display:flex;justify-content:flex-end;margin-top:4px">
         <button class="btn btn-accent" id="btn-confirm-vote" disabled onclick="openConfirmModal()">Confirmar Voto →</button>
       </div>
     </div>
   </div>
 
-  <!-- PÁGINA: APURAÇÃO -->
+  <!-- APURAÇÃO -->
   <div id="page-results" class="page">
     <div class="card">
       <div class="card-title">Apuração em Tempo Real</div>
@@ -275,29 +279,55 @@
     </div>
   </div>
 
-  <!-- PÁGINA: ADMIN -->
+  <!-- ADMIN -->
   <div id="page-admin" class="page">
+
+    <!-- LOGIN: e-mail + senha (sem prompt!) -->
     <div id="admin-login-wrap" class="card admin-login">
       <div class="card-title">Acesso Admin</div>
-      <div class="card-sub">Digite a senha do usuário administrador cadastrado no Supabase Auth. O e-mail será solicitado no primeiro acesso.</div>
+      <div class="card-sub">Use o e-mail e senha do usuário cadastrado no Supabase Authentication.</div>
       <div class="form-group">
-        <label class="form-label">Senha do admin Supabase</label>
-        <input type="password" class="form-input" id="admin-pass-input" placeholder="Senha de acesso" onkeydown="if(event.key==='Enter') doAdminLogin()">
+        <label class="form-label">E-mail do administrador</label>
+        <input type="email" class="form-input" id="admin-email-input" placeholder="admin@transbaia.net">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" class="form-input" id="admin-pass-input" placeholder="Senha de acesso"
+          onkeydown="if(event.key==='Enter') doAdminLogin()">
       </div>
       <button class="btn btn-primary" onclick="doAdminLogin()">Entrar</button>
     </div>
 
     <div id="admin-panel" style="display:none">
 
+      <!-- Configuração -->
+      <div class="card">
+        <div class="card-title">⚙️ Configuração Supabase</div>
+        <div class="config-row">
+          <span class="config-label">URL</span>
+          <span class="config-val" id="config-url-display">—</span>
+          <button class="btn btn-warning btn-sm" onclick="resetSetup()">🔧 Reconfigurar</button>
+        </div>
+      </div>
+
+      <!-- Alertas suspeitos -->
+      <div id="suspicious-wrap" style="display:none">
+        <div class="suspicious-banner">
+          <div class="s-title">🚨 Dispositivos Suspeitos</div>
+          <div style="font-size:13px;color:var(--danger);margin-bottom:12px">Os dispositivos abaixo votaram com <strong>mais de um CPF diferente</strong>. Possível tentativa de fraude.</div>
+          <div id="suspicious-list"></div>
+        </div>
+      </div>
+
       <!-- Controles -->
       <div class="card">
         <div class="card-title">Controle da Votação</div>
-        <div class="card-sub">Abra ou feche a eleição. Enquanto fechada, os votos não são aceitos.</div>
-        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+        <div class="card-sub">Abra ou feche a eleição. Enquanto fechada, nenhum voto é aceito.</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
           <button class="btn btn-success" onclick="setVotingStatus(true)">▶ Abrir Votação</button>
           <button class="btn btn-danger" onclick="setVotingStatus(false)">⏹ Fechar Votação</button>
           <button class="btn btn-outline btn-sm" onclick="clearAllVotes()">🗑 Zerar votos</button>
-          <button class="btn btn-outline btn-sm" onclick="exportLog()">⬇ Exportar log CSV</button>
+          <button class="btn btn-outline btn-sm" onclick="exportLog()">⬇ Exportar CSV</button>
           <button class="btn btn-outline btn-sm" onclick="adminLogout()">Sair</button>
         </div>
       </div>
@@ -306,17 +336,17 @@
       <div class="card">
         <div class="card-title">Cadastrar Candidato</div>
         <div class="form-group">
-          <label class="form-label">Foto do candidato</label>
+          <label class="form-label">Foto</label>
           <div class="photo-upload-wrap">
             <div class="photo-preview" id="new-photo-preview"><span id="new-photo-initials">?</span></div>
             <div>
               <label class="photo-upload-btn" for="new-photo">📷 Escolher foto</label>
               <input type="file" id="new-photo" accept="image/*" onchange="previewNewPhoto(this)">
-              <div style="font-size:12px;color:var(--muted);margin-top:6px">JPG, PNG ou WEBP — recomendado 200×200px</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:6px">JPG, PNG ou WEBP — 200×200px recomendado</div>
             </div>
           </div>
         </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
           <div class="form-group">
             <label class="form-label">Nome completo</label>
             <input type="text" class="form-input" id="new-name" placeholder="Ex: João da Silva" oninput="updateNewPhotoInitials()">
@@ -342,8 +372,8 @@
       <!-- Log imutável -->
       <div class="card">
         <div class="card-title">📋 Log Imutável de Votos</div>
-        <div class="card-sub">Cada entrada é gerada no momento do voto e não pode ser alterada ou removida. Inclui CPF mascarado, hash do dispositivo, candidato e horário.</div>
-        <div class="immutable-notice">🔒 Este log é append-only — entradas só podem ser adicionadas, nunca editadas ou deletadas.</div>
+        <div class="card-sub">Append-only — entradas só são adicionadas, nunca editadas. Linhas em vermelho indicam dispositivo suspeito.</div>
+        <div class="immutable-notice">🔒 Cada voto tem um hash único gerado no momento do registro.</div>
         <div id="admin-log-table"><div class="empty-state">Nenhum voto registrado.</div></div>
       </div>
 
@@ -372,15 +402,34 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ─── CONFIG SUPABASE ─────────────────────────────────────
-// 1) Crie o projeto no Supabase
-// 2) Execute o arquivo supabase_schema_sipa2026.sql no SQL Editor
-// 3) Substitua os valores abaixo pela URL e pela anon/public key do seu projeto
-const SUPABASE_URL = 'https://nxdqkqiycgcqtooxskxm.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54ZHFrcWl5Y2djcXRvb3hza3htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTUxMDAsImV4cCI6MjA5NTU3MTEwMH0.I6AS5J-1OyY78KCxNJkrxEwqLxzuYTpc3ssgC31aS8E';
+// ─── SETUP / CONFIG ───────────────────────────────────────
+const SETUP_KEY  = 'sipa2026-config';
 const ELECTION_ID = 1;
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function loadConfig() {
+  try { return JSON.parse(localStorage.getItem(SETUP_KEY) || 'null'); } catch(e) { return null; }
+}
+function saveSetup() {
+  const url = document.getElementById('setup-url').value.trim().replace(/\/$/, '');
+  const key = document.getElementById('setup-key').value.trim();
+  if (!url || !key || !url.startsWith('https://')) {
+    showToast('URL deve começar com https:// e a Key não pode estar vazia.', 'error'); return;
+  }
+  localStorage.setItem(SETUP_KEY, JSON.stringify({ url, key }));
+  document.getElementById('setup-overlay').classList.remove('show');
+  initSupabase(url, key);
+  loadData();
+}
+function resetSetup() {
+  if (!confirm('Redefinir as credenciais do Supabase?')) return;
+  localStorage.removeItem(SETUP_KEY);
+  location.reload();
+}
+
+let sb = null;
+function initSupabase(url, key) {
+  sb = window.supabase.createClient(url, key);
+}
 
 // ─── STATE ────────────────────────────────────────────────
 let candidates  = [];
@@ -403,257 +452,279 @@ function getFingerprint() {
   const mem = navigator.deviceMemory || 0;
   let canvas = '';
   try {
-    const c = document.createElement('canvas');
-    c.width=200; c.height=50;
+    const c = document.createElement('canvas'); c.width = 200; c.height = 50;
     const ctx = c.getContext('2d');
-    ctx.fillStyle='#1a3a5c'; ctx.fillRect(0,0,200,50);
-    ctx.fillStyle='#e8b84b'; ctx.font='14px Arial';
-    ctx.fillText('SIPA2026',10,30);
+    ctx.fillStyle = '#1a3a5c'; ctx.fillRect(0, 0, 200, 50);
+    ctx.fillStyle = '#e8b84b'; ctx.font = '14px Arial'; ctx.fillText('SIPA2026', 10, 30);
     canvas = c.toDataURL().slice(-40);
-  } catch(e){}
+  } catch(e) {}
   const raw = `${ua}|${lang}|${tz}|${scr}|${cores}|${mem}|${canvas}`;
   let h = 0;
-  for(let i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}
-  return 'fp_'+Math.abs(h).toString(36);
+  for (let i = 0; i < raw.length; i++) { h = ((h << 5) - h) + raw.charCodeAt(i); h |= 0; }
+  return 'fp_' + Math.abs(h).toString(36);
 }
 const MY_FP = getFingerprint();
 
 function simpleHash(str) {
   let h = 5381;
-  for(let i=0;i<str.length;i++){h=((h<<5)+h)+str.charCodeAt(i);h|=0;}
-  return Math.abs(h).toString(16).padStart(8,'0');
+  for (let i = 0; i < str.length; i++) { h = ((h << 5) + h) + str.charCodeAt(i); h |= 0; }
+  return Math.abs(h).toString(16).padStart(8, '0');
 }
 function hashCPF(cpf) { return 'cpf_' + simpleHash(cpf + 'sipa2026salt'); }
 function maskCPFDisplay(cpf) {
-  const d = cpf.replace(/\D/g,'');
-  if(d.length !== 11) return '***';
+  const d = cpf.replace(/\D/g, '');
+  if (d.length !== 11) return '***';
   return `***.***.${ d.slice(6,9) }-${ d.slice(9) }`;
 }
 
-// ─── SUPABASE HELPERS ────────────────────────────────────
-function configOk(){ return !SUPABASE_URL.includes('COLE_AQUI') && !SUPABASE_ANON_KEY.includes('COLE_AQUI'); }
-function dbError(error, fallback='Erro no Supabase'){
-  if(error){ console.error(error); showToast(error.message || fallback, 'error'); return true; }
+// ─── DB HELPERS ───────────────────────────────────────────
+function dbError(error, fallback = 'Erro no Supabase') {
+  if (error) { console.error(error); showToast(error.message || fallback, 'error'); return true; }
   return false;
 }
-async function loadData() {
-  if(!configOk()) {
-    document.getElementById('status-text').textContent = 'Configure SUPABASE_URL e SUPABASE_ANON_KEY no arquivo HTML';
-    showToast('Configure as credenciais do Supabase no HTML.', 'error');
-    renderAll(); initVotePage(); return;
-  }
 
+async function loadData() {
+  if (!sb) return;
   const { data: sessionData } = await sb.auth.getSession();
   adminLogged = !!sessionData?.session;
-  if(adminLogged){
-    document.getElementById('admin-login-wrap').style.display='none';
-    document.getElementById('admin-panel').style.display='block';
+  if (adminLogged) {
+    document.getElementById('admin-login-wrap').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
   }
-
   await refreshPublicData();
   await checkAlreadyVoted();
   renderAll();
   initVotePage();
 }
 
-async function refreshPublicData(){
+async function refreshPublicData() {
+  if (!sb) return;
   const { data: settings, error: e1 } = await sb.from('election_settings').select('voting_open').eq('id', ELECTION_ID).single();
-  if(dbError(e1, 'Erro ao buscar status da votação')) return;
+  if (dbError(e1, 'Erro ao buscar status')) return;
   votingOpen = !!settings.voting_open;
 
   const { data: cand, error: e2 } = await sb.from('candidates').select('id,name,role,number,photo,active').eq('active', true).order('number', { ascending: true });
-  if(dbError(e2, 'Erro ao buscar candidatos')) return;
+  if (dbError(e2, 'Erro ao buscar candidatos')) return;
   candidates = cand || [];
 
   const { data: totals, error: e3 } = await sb.from('vote_totals').select('candidate_id,total');
-  if(dbError(e3, 'Erro ao buscar apuração')) return;
+  if (dbError(e3, 'Erro ao buscar apuração')) return;
   voteTotals = {};
   (totals || []).forEach(t => voteTotals[t.candidate_id] = t.total || 0);
 
-  if(adminLogged) await loadAdminLog();
+  if (adminLogged) await loadAdminLog();
 }
 
-async function checkAlreadyVoted(){
+async function checkAlreadyVoted() {
   const saved = localStorage.getItem('sipa2026-last-receipt');
-  if(saved){
-    try{
-      const receipt = JSON.parse(saved);
-      alreadyVoted = true;
-      votedFor = receipt.candidateId;
-      voteLog = [receipt];
-    } catch(e){}
+  if (saved) {
+    try { const r = JSON.parse(saved); alreadyVoted = true; votedFor = r.candidateId; } catch(e) {}
   }
 }
 
-async function loadAdminLog(){
-  const { data, error } = await sb.from('votes').select('id,cpf_masked,cpf_hash,device_fp,candidate_id,record_hash,created_at').order('created_at', { ascending: true });
-  if(error){ console.warn('Log disponível apenas para admin autorizado:', error.message); voteLog=[]; return; }
-  voteLog = (data || []).map((l,i)=>({
-    seq:i+1,
-    cpfMasked:l.cpf_masked,
-    cpfHash:l.cpf_hash,
-    fp:l.device_fp,
-    candidateId:l.candidate_id,
-    time:new Date(l.created_at).getTime(),
-    hash:l.record_hash
+async function loadAdminLog() {
+  const { data, error } = await sb.from('votes')
+    .select('id,cpf_masked,cpf_hash,device_fp,candidate_id,record_hash,created_at')
+    .order('created_at', { ascending: true });
+  if (error) { console.warn('Log sem permissão:', error.message); voteLog = []; return; }
+  voteLog = (data || []).map((l, i) => ({
+    seq: i + 1,
+    cpfMasked: l.cpf_masked,
+    cpfHash: l.cpf_hash,
+    fp: l.device_fp,
+    candidateId: l.candidate_id,
+    time: new Date(l.created_at).getTime(),
+    hash: l.record_hash
   }));
+}
+
+// ─── DETECÇÃO DE SUSPEITOS ────────────────────────────────
+// Mesmo device_fp com mais de 1 cpf_hash diferente = suspeito
+function detectSuspicious() {
+  const map = {};
+  for (const l of voteLog) {
+    if (!map[l.fp]) map[l.fp] = { hashes: new Set(), masks: [] };
+    if (!map[l.fp].hashes.has(l.cpfHash)) {
+      map[l.fp].hashes.add(l.cpfHash);
+      map[l.fp].masks.push(l.cpfMasked);
+    }
+  }
+  return Object.entries(map)
+    .filter(([, d]) => d.hashes.size > 1)
+    .map(([fp, d]) => ({ fp, cpfs: d.masks }));
 }
 
 // ─── RENDER ───────────────────────────────────────────────
 function renderAll() {
   renderStatusBanner();
   renderResults();
-  if(adminLogged) renderAdminPanel();
+  if (adminLogged) renderAdminPanel();
 }
+
 function renderStatusBanner() {
-  const banner = document.getElementById('vote-status-banner');
-  const text   = document.getElementById('status-text');
-  if(votingOpen){ banner.className='status-banner open'; text.textContent='Votação aberta — identifique-se para votar'; }
-  else           { banner.className='status-banner closed'; text.textContent='Votação encerrada'; }
+  const b = document.getElementById('vote-status-banner');
+  const t = document.getElementById('status-text');
+  if (votingOpen) { b.className = 'status-banner open'; t.textContent = 'Votação aberta — identifique-se para votar'; }
+  else { b.className = 'status-banner closed'; t.textContent = 'Votação encerrada'; }
 }
+
 function initVotePage() {
   document.getElementById('voted-screen').style.display = 'none';
-  document.getElementById('cpf-step').style.display    = 'none';
-  document.getElementById('vote-form').style.display   = 'none';
-
-  if(alreadyVoted) {
+  document.getElementById('cpf-step').style.display     = 'none';
+  document.getElementById('vote-form').style.display    = 'none';
+  if (alreadyVoted) {
     document.getElementById('voted-screen').style.display = 'block';
-    const c = candidates.find(c=>c.id===votedFor);
+    const c = candidates.find(c => c.id === votedFor);
     const receiptData = JSON.parse(localStorage.getItem('sipa2026-last-receipt') || 'null');
-    const receipt = document.getElementById('vote-receipt');
-    if(receiptData){
-      receipt.innerHTML = `
+    if (receiptData) {
+      document.getElementById('vote-receipt').innerHTML = `
         <div style="margin-bottom:6px"><strong>CPF:</strong> ${receiptData.cpfMasked}</div>
         <div style="margin-bottom:6px"><strong>Candidato:</strong> ${c ? c.name : '?'} (nº ${c ? c.number : '?'})</div>
         <div style="margin-bottom:6px"><strong>Horário:</strong> ${new Date(receiptData.time).toLocaleString('pt-BR')}</div>
-        <div style="margin-bottom:6px"><strong>Hash do registro:</strong> <span class="log-hash">${receiptData.hash}</span></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px">Guarde este hash como comprovante do seu voto.</div>`;
+        <div style="margin-bottom:6px"><strong>Hash:</strong> <span class="log-hash">${receiptData.hash}</span></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px">Guarde este hash como comprovante.</div>`;
     }
     return;
   }
   document.getElementById('cpf-step').style.display = 'block';
 }
+
 function renderCandidatesGrid() {
   const grid = document.getElementById('candidates-grid');
-  if(!votingOpen){ grid.innerHTML='<div class="empty-state">⏹ A votação está encerrada.</div>'; document.getElementById('btn-confirm-vote').disabled=true; return; }
-  if(candidates.length===0){ grid.innerHTML='<div class="empty-state">Nenhum candidato cadastrado ainda.</div>'; document.getElementById('btn-confirm-vote').disabled=true; return; }
-  grid.innerHTML = candidates.map(c=>`
-    <div class="candidate-card ${selectedId===c.id?'selected':''}" onclick="selectCandidate('${c.id}')">
-      <div class="candidate-avatar">${c.photo?`<img src="${c.photo}" alt="${escapeHtml(c.name)}">`  : initials(c.name)}</div>
+  if (!votingOpen) { grid.innerHTML = '<div class="empty-state">⏹ A votação está encerrada.</div>'; document.getElementById('btn-confirm-vote').disabled = true; return; }
+  if (candidates.length === 0) { grid.innerHTML = '<div class="empty-state">Nenhum candidato cadastrado ainda.</div>'; document.getElementById('btn-confirm-vote').disabled = true; return; }
+  grid.innerHTML = candidates.map(c => `
+    <div class="candidate-card ${selectedId === c.id ? 'selected' : ''}" onclick="selectCandidate('${c.id}')">
+      <div class="candidate-avatar">${c.photo ? `<img src="${c.photo}" alt="${escapeHtml(c.name)}">` : initials(c.name)}</div>
       <div class="candidate-name">${escapeHtml(c.name)}</div>
       <div class="candidate-role">${escapeHtml(c.role || '—')}</div>
       <div class="candidate-num">${escapeHtml(c.number)}</div>
     </div>`).join('');
   document.getElementById('btn-confirm-vote').disabled = !selectedId;
 }
+
 function renderResults() {
-  const total = Object.values(voteTotals).reduce((a,b)=>a+b,0);
+  const total = Object.values(voteTotals).reduce((a, b) => a + b, 0);
   document.getElementById('stat-total').textContent      = total;
   document.getElementById('stat-candidates').textContent = candidates.length;
-  let leaderName='—', maxV=-1;
-  candidates.forEach(c=>{ const v=voteTotals[c.id]||0; if(v>maxV){maxV=v;leaderName=c.name.split(' ')[0];} });
+  let leaderName = '—', maxV = -1;
+  candidates.forEach(c => { const v = voteTotals[c.id] || 0; if (v > maxV) { maxV = v; leaderName = c.name.split(' ')[0]; } });
   document.getElementById('stat-leader').textContent = leaderName;
-
   const list = document.getElementById('results-list');
-  if(candidates.length===0){ list.innerHTML='<div class="empty-state">Nenhum candidato cadastrado.</div>'; return; }
-  const sorted = [...candidates].sort((a,b)=>(voteTotals[b.id]||0)-(voteTotals[a.id]||0));
-  list.innerHTML = sorted.map((c,i)=>{
-    const v = voteTotals[c.id]||0;
-    const pct = total>0?((v/total)*100).toFixed(1):'0.0';
-    const av = c.photo?`<img src="${c.photo}" alt="${escapeHtml(c.name)}">`  : initials(c.name);
+  if (candidates.length === 0) { list.innerHTML = '<div class="empty-state">Nenhum candidato cadastrado.</div>'; return; }
+  const sorted = [...candidates].sort((a, b) => (voteTotals[b.id] || 0) - (voteTotals[a.id] || 0));
+  list.innerHTML = sorted.map((c, i) => {
+    const v = voteTotals[c.id] || 0;
+    const pct = total > 0 ? ((v / total) * 100).toFixed(1) : '0.0';
     return `
       <div class="result-item">
         <div class="result-header">
-          <div class="result-avatar">${av}</div>
+          <div class="result-avatar">${c.photo ? `<img src="${c.photo}" alt="${escapeHtml(c.name)}">` : initials(c.name)}</div>
           <div class="result-name-wrap">
-            <span class="result-name">${i===0&&v>0?'🏆 ':''}${escapeHtml(c.name)} <span style="font-size:12px;color:var(--muted);font-weight:400">(nº ${escapeHtml(c.number)})</span></span>
+            <span class="result-name">${i === 0 && v > 0 ? '🏆 ' : ''}${escapeHtml(c.name)} <span style="font-size:12px;color:var(--muted);font-weight:400">(nº ${escapeHtml(c.number)})</span></span>
             <span class="result-pct">${pct}%</span>
           </div>
         </div>
-        <div class="result-bar-bg"><div class="result-bar ${i===0&&v>0?'leader':''}" style="width:${pct}%"></div></div>
-        <div class="result-votes">${v} voto${v!==1?'s':''}</div>
+        <div class="result-bar-bg"><div class="result-bar ${i === 0 && v > 0 ? 'leader' : ''}" style="width:${pct}%"></div></div>
+        <div class="result-votes">${v} voto${v !== 1 ? 's' : ''}</div>
       </div>`;
   }).join('');
 }
+
 function renderAdminPanel() {
+  // Config URL
+  const cfg = loadConfig();
+  if (cfg) document.getElementById('config-url-display').textContent = cfg.url;
+
+  // Suspeitos
+  const suspicious = detectSuspicious();
+  const sw = document.getElementById('suspicious-wrap');
+  if (suspicious.length > 0) {
+    sw.style.display = 'block';
+    document.getElementById('suspicious-list').innerHTML = suspicious.map(s => `
+      <div class="suspicious-item">
+        <div style="font-size:12px;font-weight:600;color:var(--danger);margin-bottom:4px">⚠️ ${s.cpfs.length} CPFs diferentes no mesmo dispositivo</div>
+        <div class="suspicious-fp">Dispositivo: ${escapeHtml(s.fp)}</div>
+        <div class="suspicious-cpfs">${s.cpfs.map(cpf => `<span class="suspicious-cpf-tag">${escapeHtml(cpf)}</span>`).join('')}</div>
+      </div>`).join('');
+  } else {
+    sw.style.display = 'none';
+  }
+
+  // Candidatos
   const el = document.getElementById('admin-candidates-table');
-  if(candidates.length===0){ el.innerHTML='<div class="empty-state">Nenhum candidato.</div>'; }
+  if (candidates.length === 0) { el.innerHTML = '<div class="empty-state">Nenhum candidato.</div>'; }
   else {
-    el.innerHTML=`<table class="table">
+    el.innerHTML = `<table class="table">
       <thead><tr><th>Foto</th><th>Nº</th><th>Nome</th><th>Cargo</th><th>Votos</th><th></th></tr></thead>
-      <tbody>${candidates.map(c=>`<tr>
-        <td><div class="admin-avatar">${c.photo?`<img src="${c.photo}">`  :initials(c.name)}</div></td>
+      <tbody>${candidates.map(c => `<tr>
+        <td><div class="admin-avatar">${c.photo ? `<img src="${c.photo}">` : initials(c.name)}</div></td>
         <td><strong>${escapeHtml(c.number)}</strong></td>
         <td>${escapeHtml(c.name)}</td>
         <td style="color:var(--muted)">${escapeHtml(c.role || '—')}</td>
-        <td><strong>${voteTotals[c.id]||0}</strong></td>
+        <td><strong>${voteTotals[c.id] || 0}</strong></td>
         <td><button class="btn btn-danger btn-sm" onclick="removeCandidate('${c.id}')">Remover</button></td>
-      </tr>`).join('')}</tbody>
-    </table>`;
+      </tr>`).join('')}</tbody></table>`;
   }
 
+  // Log
   const le = document.getElementById('admin-log-table');
-  if(voteLog.length===0){ le.innerHTML='<div class="empty-state">Nenhum voto registrado ou sem permissão para visualizar log.</div>'; }
+  if (voteLog.length === 0) { le.innerHTML = '<div class="empty-state">Nenhum voto registrado.</div>'; }
   else {
-    le.innerHTML=`<table class="table">
+    le.innerHTML = `<table class="table">
       <thead><tr><th>#</th><th>CPF (mascarado)</th><th>Candidato</th><th>Dispositivo</th><th>Horário</th><th>Hash</th></tr></thead>
-      <tbody>${voteLog.map((l,i)=>{
-        const c = candidates.find(c=>c.id===l.candidateId);
-        return `<tr>
-          <td>${l.seq||i+1}</td>
-          <td><span class="log-badge">${escapeHtml(l.cpfMasked)}</span></td>
-          <td>${c?escapeHtml(c.name):'?'}</td>
+      <tbody>${voteLog.map((l, i) => {
+        const c = candidates.find(c => c.id === l.candidateId);
+        const isSusp = suspicious.some(s => s.fp === l.fp);
+        return `<tr style="${isSusp ? 'background:#fff0f0' : ''}">
+          <td>${l.seq || i + 1}</td>
+          <td><span class="log-badge">${escapeHtml(l.cpfMasked)}</span>${isSusp ? ' <span title="Dispositivo suspeito" style="color:var(--danger)">⚠️</span>' : ''}</td>
+          <td>${c ? escapeHtml(c.name) : '?'}</td>
           <td class="log-hash">${escapeHtml(l.fp)}</td>
           <td style="font-size:12px;color:var(--muted)">${new Date(l.time).toLocaleString('pt-BR')}</td>
           <td class="log-hash">${escapeHtml(l.hash)}</td>
         </tr>`;
-      }).join('')}</tbody>
-    </table>`;
+      }).join('')}</tbody></table>`;
   }
 }
 
 // ─── CPF ──────────────────────────────────────────────────
 function maskCPF(input) {
-  let v = input.value.replace(/\D/g,'');
-  if(v.length>11) v=v.slice(0,11);
-  if(v.length>9)      v=v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');
-  else if(v.length>6) v=v.replace(/(\d{3})(\d{3})(\d{1,3})/,'$1.$2.$3');
-  else if(v.length>3) v=v.replace(/(\d{3})(\d{1,3})/,'$1.$2');
+  let v = input.value.replace(/\D/g, '');
+  if (v.length > 11) v = v.slice(0, 11);
+  if (v.length > 9)      v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+  else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+  else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
   input.value = v;
   document.getElementById('cpf-hint').textContent = '';
   input.classList.remove('error');
 }
 function validarCPF(cpf) {
-  cpf = cpf.replace(/\D/g,'');
-  if(cpf.length!==11 || /^(\d)\1+$/.test(cpf)) return false;
-  let s=0; for(let i=0;i<9;i++) s+=parseInt(cpf[i])*(10-i);
-  let r=11-(s%11); if(r>=10) r=0; if(r!==parseInt(cpf[9])) return false;
-  s=0; for(let i=0;i<10;i++) s+=parseInt(cpf[i])*(11-i);
-  r=11-(s%11); if(r>=10) r=0; return r===parseInt(cpf[10]);
+  cpf = cpf.replace(/\D/g, '');
+  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+  let s = 0; for (let i = 0; i < 9; i++) s += parseInt(cpf[i]) * (10 - i);
+  let r = 11 - (s % 11); if (r >= 10) r = 0; if (r !== parseInt(cpf[9])) return false;
+  s = 0; for (let i = 0; i < 10; i++) s += parseInt(cpf[i]) * (11 - i);
+  r = 11 - (s % 11); if (r >= 10) r = 0; return r === parseInt(cpf[10]);
 }
 async function confirmarCPF() {
   const input = document.getElementById('cpf-input');
-  const raw = input.value.replace(/\D/g,'');
+  const raw = input.value.replace(/\D/g, '');
   const hint = document.getElementById('cpf-hint');
-
-  if(!validarCPF(raw)) {
-    input.classList.add('error'); hint.style.color = 'var(--danger)';
-    hint.textContent = 'CPF inválido. Verifique e tente novamente.'; return;
-  }
-  if(!votingOpen){ showToast('A votação está encerrada.', 'error'); return; }
-
+  if (!validarCPF(raw)) { input.classList.add('error'); hint.style.color = 'var(--danger)'; hint.textContent = 'CPF inválido. Verifique e tente novamente.'; return; }
+  if (!votingOpen) { showToast('A votação está encerrada.', 'error'); return; }
   currentCPF = raw;
   document.getElementById('cpf-step').style.display = 'none';
   document.getElementById('vote-form').style.display = 'block';
-  document.getElementById('cpf-badge').textContent   = maskCPFDisplay(raw);
+  document.getElementById('cpf-badge').textContent = maskCPFDisplay(raw);
   renderCandidatesGrid();
 }
 
 // ─── VOTAÇÃO ──────────────────────────────────────────────
-function selectCandidate(id) { if(!votingOpen) return; selectedId = id; renderCandidatesGrid(); }
+function selectCandidate(id) { if (!votingOpen) return; selectedId = id; renderCandidatesGrid(); }
 function openConfirmModal() {
-  if(!selectedId || !currentCPF) return;
-  const c = candidates.find(c=>c.id===selectedId);
+  if (!selectedId || !currentCPF) return;
+  const c = candidates.find(c => c.id === selectedId);
   document.getElementById('modal-candidate-name').textContent = c ? `${c.name} (nº ${c.number})` : '';
   document.getElementById('modal-cpf-show').textContent = `CPF: ${maskCPFDisplay(currentCPF)}`;
   document.getElementById('confirm-modal').classList.add('show');
@@ -661,153 +732,150 @@ function openConfirmModal() {
 function closeConfirmModal() { document.getElementById('confirm-modal').classList.remove('show'); }
 async function submitVote() {
   closeConfirmModal();
-  if(!selectedId||!votingOpen||!currentCPF){ showToast('Não foi possível registrar o voto.','error'); return; }
-  if(alreadyVoted){ showToast('Você já votou neste navegador.','error'); return; }
-
+  if (!selectedId || !votingOpen || !currentCPF) { showToast('Não foi possível registrar o voto.', 'error'); return; }
+  if (alreadyVoted) { showToast('Você já votou neste navegador.', 'error'); return; }
   const cpfH = hashCPF(currentCPF);
   const time = Date.now();
   const recordHash = simpleHash(`${cpfH}|${MY_FP}|${selectedId}|${time}|SIPA2026`);
-  const payload = {
-    cpf_hash: cpfH,
-    cpf_masked: maskCPFDisplay(currentCPF),
-    device_fp: MY_FP,
-    candidate_id: selectedId,
-    record_hash: recordHash
-  };
+  const payload = { cpf_hash: cpfH, cpf_masked: maskCPFDisplay(currentCPF), device_fp: MY_FP, candidate_id: selectedId, record_hash: recordHash };
   const { error } = await sb.from('votes').insert(payload);
-  if(error){
-    if((error.message || '').toLowerCase().includes('duplicate') || error.code === '23505') showToast('Este CPF ou dispositivo já votou nesta eleição.','error');
-    else showToast(error.message || 'Erro ao registrar voto.','error');
+  if (error) {
+    if ((error.message || '').toLowerCase().includes('duplicate') || error.code === '23505')
+      showToast('Este CPF ou dispositivo já votou nesta eleição.', 'error');
+    else showToast(error.message || 'Erro ao registrar voto.', 'error');
     return;
   }
-
-  alreadyVoted = true;
-  votedFor = selectedId;
-  const receipt = { cpfMasked:payload.cpf_masked, fp:MY_FP, candidateId:selectedId, time, hash:recordHash };
+  alreadyVoted = true; votedFor = selectedId;
+  const receipt = { cpfMasked: payload.cpf_masked, fp: MY_FP, candidateId: selectedId, time, hash: recordHash };
   localStorage.setItem('sipa2026-last-receipt', JSON.stringify(receipt));
-
-  showToast('Voto registrado com sucesso!','success');
-  await refreshPublicData();
-  renderAll(); initVotePage();
+  showToast('Voto registrado com sucesso!', 'success');
+  await refreshPublicData(); renderAll(); initVotePage();
 }
 
 // ─── ADMIN ────────────────────────────────────────────────
 async function doAdminLogin() {
-  const email = document.getElementById('admin-pass-input').dataset.email || prompt('E-mail do administrador:');
+  const email    = document.getElementById('admin-email-input').value.trim();
   const password = document.getElementById('admin-pass-input').value;
-  if(!email || !password){ showToast('Informe e-mail e senha do administrador.', 'error'); return; }
+  if (!email || !password) { showToast('Informe e-mail e senha.', 'error'); return; }
   const { error } = await sb.auth.signInWithPassword({ email, password });
-  if(error){ showToast('Login admin inválido ou sem permissão.', 'error'); return; }
-  adminLogged=true;
-  document.getElementById('admin-login-wrap').style.display='none';
-  document.getElementById('admin-panel').style.display='block';
+  if (error) { showToast('E-mail ou senha inválidos.', 'error'); return; }
+  adminLogged = true;
+  document.getElementById('admin-login-wrap').style.display = 'none';
+  document.getElementById('admin-panel').style.display = 'block';
   await refreshPublicData(); renderAdminPanel(); showToast('Admin conectado.', 'success');
 }
 async function adminLogout() {
-  await sb.auth.signOut();
-  adminLogged=false;
-  document.getElementById('admin-login-wrap').style.display='block';
-  document.getElementById('admin-panel').style.display='none';
-  document.getElementById('admin-pass-input').value='';
+  await sb.auth.signOut(); adminLogged = false;
+  document.getElementById('admin-login-wrap').style.display = 'block';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-email-input').value = '';
+  document.getElementById('admin-pass-input').value = '';
 }
 async function setVotingStatus(open) {
   const { error } = await sb.from('election_settings').update({ voting_open: open }).eq('id', ELECTION_ID);
-  if(dbError(error, 'Erro ao alterar status')) return;
-  votingOpen=open; renderAll(); showToast(open?'Votação aberta!':'Votação encerrada!',open?'success':'error');
+  if (dbError(error, 'Erro ao alterar status')) return;
+  votingOpen = open; renderAll(); showToast(open ? 'Votação aberta!' : 'Votação encerrada!', open ? 'success' : 'error');
 }
 
-let newPhotoBase64=null;
+let newPhotoBase64 = null;
 function updateNewPhotoInitials() {
-  const name=document.getElementById('new-name').value.trim();
-  const el=document.getElementById('new-photo-initials');
-  if(el&&!newPhotoBase64) el.textContent=name?initials(name):'?';
+  const name = document.getElementById('new-name').value.trim();
+  const el = document.getElementById('new-photo-initials');
+  if (el && !newPhotoBase64) el.textContent = name ? initials(name) : '?';
 }
 function previewNewPhoto(input) {
-  const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=function(e){
-    const img=new Image();
-    img.onload=function(){
-      const canvas=document.createElement('canvas');
-      canvas.width=200;canvas.height=200;
-      const ctx=canvas.getContext('2d');
-      const size=Math.min(img.width,img.height);
-      ctx.drawImage(img,(img.width-size)/2,(img.height-size)/2,size,size,0,0,200,200);
-      newPhotoBase64=canvas.toDataURL('image/jpeg',0.82);
-      document.getElementById('new-photo-preview').innerHTML=`<img src="${newPhotoBase64}" alt="preview">`;
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas'); canvas.width = 200; canvas.height = 200;
+      const ctx = canvas.getContext('2d');
+      const size = Math.min(img.width, img.height);
+      ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, 200, 200);
+      newPhotoBase64 = canvas.toDataURL('image/jpeg', 0.82);
+      document.getElementById('new-photo-preview').innerHTML = `<img src="${newPhotoBase64}" alt="preview">`;
     };
-    img.src=e.target.result;
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 async function addCandidate() {
-  const name=document.getElementById('new-name').value.trim();
-  const role=document.getElementById('new-role').value.trim();
-  const num =document.getElementById('new-num').value.trim();
-  if(!name||!num){ showToast('Preencha nome e número.','error'); return; }
-  const { error } = await sb.from('candidates').insert({ name, role:role||'—', number:num, photo:newPhotoBase64||null, active:true });
-  if(dbError(error, 'Erro ao cadastrar candidato')) return;
-  document.getElementById('new-name').value=''; document.getElementById('new-role').value=''; document.getElementById('new-num').value=''; document.getElementById('new-photo').value='';
-  document.getElementById('new-photo-preview').innerHTML='<span id="new-photo-initials">?</span>'; newPhotoBase64=null;
-  await refreshPublicData(); renderAll(); showToast('Candidato adicionado!','success');
+  const name = document.getElementById('new-name').value.trim();
+  const role = document.getElementById('new-role').value.trim();
+  const num  = document.getElementById('new-num').value.trim();
+  if (!name || !num) { showToast('Preencha nome e número.', 'error'); return; }
+  const { error } = await sb.from('candidates').insert({ name, role: role || '—', number: num, photo: newPhotoBase64 || null, active: true });
+  if (dbError(error, 'Erro ao cadastrar candidato')) return;
+  document.getElementById('new-name').value = ''; document.getElementById('new-role').value = '';
+  document.getElementById('new-num').value = ''; document.getElementById('new-photo').value = '';
+  document.getElementById('new-photo-preview').innerHTML = '<span id="new-photo-initials">?</span>'; newPhotoBase64 = null;
+  await refreshPublicData(); renderAll(); showToast('Candidato adicionado!', 'success');
 }
 async function removeCandidate(id) {
-  if(!confirm('Remover este candidato? Os votos vinculados também serão removidos.')) return;
+  if (!confirm('Remover este candidato? Os votos vinculados também serão removidos.')) return;
   const { error } = await sb.from('candidates').delete().eq('id', id);
-  if(dbError(error, 'Erro ao remover candidato')) return;
-  await refreshPublicData(); renderAll(); showToast('Candidato removido.','error');
+  if (dbError(error, 'Erro ao remover')) return;
+  await refreshPublicData(); renderAll(); showToast('Candidato removido.', 'error');
 }
 async function clearAllVotes() {
-  if(!confirm('Zerar TODOS os votos? Esta ação não pode ser desfeita.')) return;
+  if (!confirm('Zerar TODOS os votos? Ação irreversível.')) return;
   const { error } = await sb.from('votes').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  if(dbError(error, 'Erro ao zerar votos')) return;
+  if (dbError(error, 'Erro ao zerar votos')) return;
   localStorage.removeItem('sipa2026-last-receipt');
-  alreadyVoted=false; votedFor=null; selectedId=null; currentCPF=null;
-  await refreshPublicData(); renderAll(); initVotePage(); showToast('Votos zerados!','error');
+  alreadyVoted = false; votedFor = null; selectedId = null; currentCPF = null;
+  await refreshPublicData(); renderAll(); initVotePage(); showToast('Votos zerados!', 'error');
 }
 function exportLog() {
-  if(voteLog.length===0){ showToast('Nenhum voto para exportar.','error'); return; }
+  if (voteLog.length === 0) { showToast('Nenhum voto para exportar.', 'error'); return; }
   const header = 'Seq,CPF Mascarado,Hash CPF,Dispositivo,Candidato,Horário,Hash Registro\n';
-  const rows = voteLog.map(l=>{
-    const c=candidates.find(c=>c.id===l.candidateId);
-    return `${l.seq},"${l.cpfMasked}","${l.cpfHash}","${l.fp}","${c?c.name:'?'}","${new Date(l.time).toLocaleString('pt-BR')}","${l.hash}"`;
+  const rows = voteLog.map(l => {
+    const c = candidates.find(c => c.id === l.candidateId);
+    return `${l.seq},"${l.cpfMasked}","${l.cpfHash}","${l.fp}","${c ? c.name : '?'}","${new Date(l.time).toLocaleString('pt-BR')}","${l.hash}"`;
   }).join('\n');
-  const blob = new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`sipa2026-log-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `sipa2026-log-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
 }
 
 // ─── NAV / UTILS ──────────────────────────────────────────
 function showPage(name) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  const tabs={vote:0,results:1,admin:2};
-  document.querySelectorAll('.nav-tab')[tabs[name]].classList.add('active');
-  if(name==='results') renderResults();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab')[{ vote: 0, results: 1, admin: 2 }[name]].classList.add('active');
+  if (name === 'results') renderResults();
 }
-function initials(name){ return (name||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase(); }
-function escapeHtml(str){ return String(str ?? '').replace(/[&<>'"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[s])); }
+function initials(name) { return (name || '?').split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase(); }
+function escapeHtml(str) { return String(str ?? '').replace(/[&<>'"]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[s])); }
 let toastTimer;
-function showToast(msg,type='') {
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='show'+(type==='success'?' success-toast':type==='error'?' error-toast':'');
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type === 'success' ? ' success-toast' : type === 'error' ? ' error-toast' : '');
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>{t.className='';},3500);
+  toastTimer = setTimeout(() => { t.className = ''; }, 3500);
 }
 
-setInterval(async()=>{
-  if(!configOk()) return;
+setInterval(async () => {
+  if (!sb) return;
   await refreshPublicData();
-  const page=document.querySelector('.page.active');
-  if(page&&page.id==='page-results') renderResults();
+  const page = document.querySelector('.page.active');
+  if (page && page.id === 'page-results') renderResults();
   renderStatusBanner();
-  if(adminLogged) renderAdminPanel();
-},10000);
+  if (adminLogged) renderAdminPanel();
+}, 10000);
 
-loadData();
+// ─── BOOT ─────────────────────────────────────────────────
+(function boot() {
+  const cfg = loadConfig();
+  if (!cfg || !cfg.url || !cfg.key) {
+    document.getElementById('setup-overlay').classList.add('show');
+  } else {
+    initSupabase(cfg.url, cfg.key);
+    loadData();
+  }
+})();
 </script>
-
 </body>
 </html>
