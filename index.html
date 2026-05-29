@@ -15,15 +15,7 @@
   }
   body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  /* SETUP OVERLAY */
-  #setup-overlay { display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,20,40,0.93); align-items:center; justify-content:center; backdrop-filter:blur(4px); }
-  #setup-overlay.show { display:flex; }
-  .setup-box { background:#fff; border-radius:16px; padding:40px 36px; max-width:480px; width:92%; box-shadow:0 24px 60px rgba(0,0,0,0.4); }
-  .setup-logo { font-family:var(--font-display); font-size:32px; letter-spacing:3px; color:var(--accent); background:var(--brand); display:inline-block; padding:4px 16px; border-radius:6px; margin-bottom:20px; }
-  .setup-title { font-family:var(--font-display); font-size:22px; letter-spacing:1px; color:var(--brand); margin-bottom:6px; }
-  .setup-sub { font-size:13px; color:var(--muted); margin-bottom:24px; line-height:1.6; }
-  .setup-steps { background:#f0f7ff; border:1px solid #bcd4f7; border-radius:8px; padding:12px 16px; margin-bottom:24px; font-size:12px; color:var(--brand); line-height:2.2; }
-  .setup-badge { display:inline-block; background:var(--brand); color:var(--accent); font-family:var(--font-display); font-size:11px; letter-spacing:1px; padding:1px 8px; border-radius:3px; }
+
 
   header { background:var(--brand); color:#fff; padding:0; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.2); }
   .header-inner { max-width:960px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; gap:16px; }
@@ -170,33 +162,6 @@
 </head>
 <body>
 
-<!-- ══ SETUP OVERLAY ══ -->
-<div id="setup-overlay">
-  <div class="setup-box">
-    <div class="setup-logo">SIPA 2026</div>
-    <div class="setup-title">Configurar Supabase</div>
-    <div class="setup-sub">Informe as credenciais do projeto. Ficam salvas neste navegador — sem editar código.</div>
-    <div class="setup-steps">
-      <strong>1.</strong> Supabase → seu projeto → <strong>Settings → API</strong><br>
-      <strong>2.</strong> Copie a <strong>Project URL</strong> e a <strong>anon/public key</strong><br>
-      <strong>3.</strong> Cole abaixo e clique em Salvar
-    </div>
-    <div class="form-group">
-      <label class="form-label">Project URL</label>
-      <input type="text" class="form-input" id="setup-url" placeholder="https://xxxxxxxxxxxx.supabase.co" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Anon / Public Key</label>
-      <input type="text" class="form-input" id="setup-key" placeholder="eyJhbGciOiJIUzI1NiIs..." autocomplete="off">
-    </div>
-    <button class="btn btn-primary" style="width:100%" onclick="saveSetup()">Salvar e Conectar →</button>
-    <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6">
-      🔒 Credenciais salvas apenas no localStorage deste navegador.<br>
-      Para redefinir: painel Admin → Reconfigurar Supabase.
-    </div>
-  </div>
-</div>
-
 <header>
   <div class="header-inner">
     <div class="logo-block">
@@ -300,16 +265,6 @@
 
     <div id="admin-panel" style="display:none">
 
-      <!-- Configuração -->
-      <div class="card">
-        <div class="card-title">⚙️ Configuração Supabase</div>
-        <div class="config-row">
-          <span class="config-label">URL</span>
-          <span class="config-val" id="config-url-display">—</span>
-          <button class="btn btn-warning btn-sm" onclick="resetSetup()">🔧 Reconfigurar</button>
-        </div>
-      </div>
-
       <!-- Alertas suspeitos -->
       <div id="suspicious-wrap" style="display:none">
         <div class="suspicious-banner">
@@ -402,34 +357,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ─── SETUP / CONFIG ───────────────────────────────────────
-const SETUP_KEY  = 'sipa2026-config';
+// ─── CONFIG SUPABASE ─────────────────────────────────────
+const SUPABASE_URL      = 'https://nxdqkqiycgcqtooxskxm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54ZHFrcWl5Y2djcXRvb3hza3htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTUxMDAsImV4cCI6MjA5NTU3MTEwMH0.I6AS5J-1OyY78KCxNJkrxEwqLxzuYTpc3ssgC31aS8E';
 const ELECTION_ID = 1;
 
-function loadConfig() {
-  try { return JSON.parse(localStorage.getItem(SETUP_KEY) || 'null'); } catch(e) { return null; }
-}
-function saveSetup() {
-  const url = document.getElementById('setup-url').value.trim().replace(/\/$/, '');
-  const key = document.getElementById('setup-key').value.trim();
-  if (!url || !key || !url.startsWith('https://')) {
-    showToast('URL deve começar com https:// e a Key não pode estar vazia.', 'error'); return;
-  }
-  localStorage.setItem(SETUP_KEY, JSON.stringify({ url, key }));
-  document.getElementById('setup-overlay').classList.remove('show');
-  initSupabase(url, key);
-  loadData();
-}
-function resetSetup() {
-  if (!confirm('Redefinir as credenciais do Supabase?')) return;
-  localStorage.removeItem(SETUP_KEY);
-  location.reload();
-}
-
-let sb = null;
-function initSupabase(url, key) {
-  sb = window.supabase.createClient(url, key);
-}
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ─── STATE ────────────────────────────────────────────────
 let candidates  = [];
@@ -632,10 +565,6 @@ function renderResults() {
 }
 
 function renderAdminPanel() {
-  // Config URL
-  const cfg = loadConfig();
-  if (cfg) document.getElementById('config-url-display').textContent = cfg.url;
-
   // Suspeitos
   const suspicious = detectSuspicious();
   const sw = document.getElementById('suspicious-wrap');
@@ -867,15 +796,7 @@ setInterval(async () => {
 }, 10000);
 
 // ─── BOOT ─────────────────────────────────────────────────
-(function boot() {
-  const cfg = loadConfig();
-  if (!cfg || !cfg.url || !cfg.key) {
-    document.getElementById('setup-overlay').classList.add('show');
-  } else {
-    initSupabase(cfg.url, cfg.key);
-    loadData();
-  }
-})();
+loadData();
 </script>
 </body>
 </html>
